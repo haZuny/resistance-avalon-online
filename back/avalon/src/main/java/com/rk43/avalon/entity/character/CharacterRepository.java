@@ -2,9 +2,7 @@ package com.rk43.avalon.entity.character;
 
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class CharacterRepository {
@@ -24,12 +22,17 @@ public class CharacterRepository {
         this.characterMap.put(7, new CharacterEntity(7, "oberon"));
     }
 
-    Optional<CharacterEntity> findById(int id){
+    public Optional<CharacterEntity> findById(int id){
         if (characterMap.containsKey(id))   return Optional.ofNullable(characterMap.get(id));
         else return Optional.empty();
     }
 
-    Optional<CharacterEntity> findByCharacter(String character){
-        Iterator<HashMap> iter = characterMap.iter
+    public Optional<CharacterEntity> findByCharacter(String character){
+        List<CharacterEntity> list = (List<CharacterEntity>) characterMap.values();
+        for (CharacterEntity characterEntity : list){
+            if (characterEntity.getCharacter().equals(character))
+                return Optional.of(characterEntity);
+        }
+        return Optional.empty();
     }
 }

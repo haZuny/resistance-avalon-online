@@ -3,9 +3,7 @@ package com.rk43.avalon.entity.user;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Repository
 public class UserRepository {
@@ -15,21 +13,32 @@ public class UserRepository {
     // about generate key
     Random random = new Random();
 
-    UserEntity save(UserEntity user){
+    public UserEntity save(UserEntity user){
+        // create id
         String id = createId();
         user.setId(id);
+        // if nickname is empty :: create nickname
+        if (user.getNickname().isEmpty()){
+            ArrayList<String> randomNicknameList = (ArrayList<String>) List.of(
+                    "개똥", "헌터", "마스터", "킹발론", "수호자"
+                    , "개맛살", "아맛나", "학살자", "탐정", "킹",
+                    "전설의", "레전드", "내이름은", "안녕", "아발론"
+                    ,"예의바른", "ㅎㅇ", "ㅋㅋ", "오리지날", "게임기");
+            String randomNickname = randomNicknameList.get(random.nextInt(randomNicknameList.size())) + id;
+            user.setNickname(randomNickname);
+        }
         userMap.put(id, user);
         return user;
     }
 
-    Optional<UserEntity> findById(String id){
+    public Optional<UserEntity> findById(String id){
         if(userMap.containsKey(id)) return Optional.ofNullable(userMap.get(id));
         else return Optional.empty();
     }
 
 
     // generate key
-    String createId(){
+    private String createId(){
         String id;
         do{
             id = "";
