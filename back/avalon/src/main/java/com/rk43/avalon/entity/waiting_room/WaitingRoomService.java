@@ -1,5 +1,7 @@
 package com.rk43.avalon.entity.waiting_room;
 
+import com.rk43.avalon.entity.DefaultResponseDto;
+import com.rk43.avalon.entity.character.CharacterEntity;
 import com.rk43.avalon.entity.character.CharacterRepository;
 import com.rk43.avalon.entity.user.UserEntity;
 import com.rk43.avalon.entity.user.UserRepository;
@@ -84,6 +86,82 @@ public class WaitingRoomService {
         } catch (Exception e){}
 
         responseDto.setMessage("success");
+        responseDto.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    public ResponseEntity<DefaultResponseDto> updateWaitingRoom(String waitingRoomId, String userId, UpdateWaitingRoomRequestDto requestDto){
+
+        DefaultResponseDto responseDto = new DefaultResponseDto();
+
+        Optional<WaitingRoomEntity> waitingRoomOptional = waitingRoomRepository.findById(waitingRoomId);
+
+        // check waiting room not found
+        if (waitingRoomOptional.isEmpty())  {
+            responseDto.setMessage(String.format("waiting room[%s] not found", waitingRoomId));
+            responseDto.setStatus(HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
+        WaitingRoomEntity waitingRoom = waitingRoomOptional.get();
+
+        // check user is admin
+        if (!waitingRoom.getAdmin().getId().equals(userId)){
+            responseDto.setMessage(String.format("user[%s] is not admin", userId));
+            responseDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+        }
+
+        // set maximum user
+        if(requestDto.getMaximum_user() != -1){
+            int maximum = requestDto.getMaximum_user();
+            // check maximum is valid
+            if (maximum <= 4 || maximum >= 11 || maximum <= waitingRoom.getMember().size()){
+                responseDto.setMessage(String.format("maximum value is invalid"));
+                responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            }
+            waitingRoom.setMaximumUser(maximum);
+            waitingRoomRepository.save(waitingRoom);
+        }
+
+        // set selected character
+        if (requestDto.getSelected_character() != null){
+            boolean selectedMordred = false;
+            boolean selectedOberon = false;
+
+            for (String character : requestDto.getSelected_character()){
+                if (!selectedMordred && character.equals("mordred"))
+                    selectedMordred = true;
+                else if(!selectedOberon && character.equals("oberon"))
+                    selectedOberon = true;
+                else{
+                    responseDto.setMessage(String.format("selected values are invalid"));
+                    responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+                }
+            }
+
+            // check member cnt valid
+            if ((waitingRoom.getMember().size() + 1 <= 6 && (selectedMordred || selectedOberon)) ||
+                    (waitingRoom.getMember().size() + 1 <= 9 && (selectedMordred && selectedOberon))){
+                responseDto.setMessage(String.format("selected values are invalid"));
+                responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            }
+
+            ArrayList<CharacterEntity> temp = new ArrayList<>();
+
+            if (selectedMordred)
+                temp.add(characterRepository.findById(6).get());
+            if (selectedOberon)
+                temp.add(characterRepository.findById(7).get());
+
+            waitingRoom.setSelectedCharacter(temp);
+        }
+
+        // response
+        responseDto.setMessage(String.format("game option is successfully updated."));
         responseDto.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

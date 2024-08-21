@@ -17,10 +17,18 @@ public class WaitingRoomRepository {
 
     // save
     public WaitingRoomEntity save(WaitingRoomEntity waitingRoom){
-        String id = createId();
-        waitingRoom.setId(id);
-        waitingRoomMap.put(id, waitingRoom);
-        return waitingRoom;
+        // update
+        if (waitingRoomMap.containsKey(waitingRoom.getId())){
+            waitingRoomMap.put(waitingRoom.getId(), waitingRoom);
+            return waitingRoom;
+        }
+        // create
+        else{
+            String id = createId();
+            waitingRoom.setId(id);
+            waitingRoomMap.put(id, waitingRoom);
+            return waitingRoom;
+        }
     }
 
     // delete

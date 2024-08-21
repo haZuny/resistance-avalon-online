@@ -18,7 +18,6 @@ public class WaitingRoomEntity {
     private ArrayList<UserEntity> member = new ArrayList<>();
     private ArrayList<CharacterEntity> selectedCharacter = new ArrayList<>();
     private int maximumUser;
-    private int lastMemberOrder;
 
     public boolean containsUser(String userId){
         if (admin.getId().equals(userId))   return true;
