@@ -1,18 +1,17 @@
 package com.rk43.avalon.entity.waiting_room;
 
+import com.rk43.avalon.entity.DefaultResponseDto;
 import com.rk43.avalon.entity.character.CharacterRepository;
 import com.rk43.avalon.entity.user.UserEntity;
 import com.rk43.avalon.entity.user.UserRepository;
-import com.rk43.avalon.entity.waiting_room.dto.NicknameData;
-import com.rk43.avalon.entity.waiting_room.dto.PostResponseDto;
-import com.rk43.avalon.entity.waiting_room.dto.UserData;
-import com.rk43.avalon.entity.waiting_room.dto.WaitingRoomData;
+import com.rk43.avalon.entity.waiting_room.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class WaitingRoomService {
@@ -66,5 +65,47 @@ public class WaitingRoomService {
         postResponseDto.setStatus(HttpStatus.OK.value());
         postResponseDto.setMessage("new waiting room is created");
         return new ResponseEntity<>(postResponseDto, HttpStatus.OK);
+    }
+
+    public ResponseEntity<GetIdResponseDto> getWaitingRoom(String waitingRoomId, String userId){
+
+        GetIdResponseDto getIdResponseDto = new GetIdResponseDto();
+        Optional<WaitingRoomEntity> waitingRoomOptional = waitingRoomRepository.findById(waitingRoomId);
+
+        // check waiting room not found
+        if (waitingRoomOptional.isEmpty())  {
+            getIdResponseDto.setMessage(String.format("waiting room[%s] not found", waitingRoomId));
+            getIdResponseDto.setStatus(HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(getIdResponseDto, HttpStatus.NOT_FOUND);
+        }
+
+        WaitingRoomEntity waitingRoom = waitingRoomOptional.get();
+
+        // check user contained
+        if (!waitingRoom.containsUser(userId)){
+            getIdResponseDto.setMessage(String.format("user[%s] has no access", userId));
+            getIdResponseDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<>(getIdResponseDto, HttpStatus.UNAUTHORIZED);
+        }
+
+        // set response dto
+        GetIdResponseDto responseDto = new GetIdResponseDto();
+        responseDto.setData(new WaitingRoomData());
+        responseDto.getData().setWaiting_room_id(waitingRoom.getId());
+        responseDto.getData().setWaiting_room_admin(new UserData(waitingRoom.getAdmin().getId(), waitingRoom.getAdmin().getNickname()));
+        responseDto.getData().setWaiting_room_member(new ArrayList<>());
+        for (UserEntity user : waitingRoom.getMember()){
+            responseDto.getData().getWaiting_room_member().add(new UserData(user.getId(), user.getNickname()));
+        }
+        responseDto.getData().setWaiting_room_maximum_user(waitingRoom.getMaximumUser());
+        try{
+            responseDto.getData().refreshCharacters(waitingRoom.getSelectedCharacter());
+        } catch (Exception e){
+
+        }
+
+        responseDto.setMessage("success");
+        responseDto.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

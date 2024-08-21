@@ -23,6 +23,12 @@ public class WaitingRoomRepository {
         return waitingRoom;
     }
 
+    // find
+    Optional<WaitingRoomEntity> findById(String id){
+        if (waitingRoomMap.containsKey(id)) return Optional.of(waitingRoomMap.get(id));
+        else return Optional.empty();
+    }
+
 
 
 
