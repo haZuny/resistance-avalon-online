@@ -23,6 +23,13 @@ public class WaitingRoomRepository {
         return waitingRoom;
     }
 
+    // delete
+    public void deleteById(String id){
+        try{
+            waitingRoomMap.remove(id);
+        } catch (Exception e){}
+    }
+
     // find
     Optional<WaitingRoomEntity> findById(String id){
         if (waitingRoomMap.containsKey(id)) return Optional.of(waitingRoomMap.get(id));

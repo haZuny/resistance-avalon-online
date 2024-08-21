@@ -10,5 +10,4 @@ import org.springframework.stereotype.Component;
 public class UserEntity {
     String id;
     String nickname;
-    int order;
 }

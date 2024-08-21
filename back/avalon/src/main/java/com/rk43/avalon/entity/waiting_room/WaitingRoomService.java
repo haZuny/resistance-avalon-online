@@ -1,6 +1,5 @@
 package com.rk43.avalon.entity.waiting_room;
 
-import com.rk43.avalon.entity.DefaultResponseDto;
 import com.rk43.avalon.entity.character.CharacterRepository;
 import com.rk43.avalon.entity.user.UserEntity;
 import com.rk43.avalon.entity.user.UserRepository;
@@ -26,41 +25,23 @@ public class WaitingRoomService {
         this.characterRepository = characterRepository;
     }
 
-    public ResponseEntity<PostResponseDto> createNewRoom(NicknameData nickname) {
-        int lastMemberOrder = 0;
+    public ResponseEntity<CreateRoomResponseDto> createNewRoom(NicknameData nickname) {
         int defaultMaximumMember = 10;
 
         // create new admin
         UserEntity admin = new UserEntity();
         admin.setNickname(nickname.getNickname());
-        admin.setOrder(lastMemberOrder);
         admin = userRepository.save(admin);
 
         // create new waiting room
         WaitingRoomEntity waitingRoom = new WaitingRoomEntity();
         waitingRoom.setAdmin(admin);
         waitingRoom.setMaximumUser(defaultMaximumMember);
-        waitingRoom.setLastMemberOrder(lastMemberOrder);
-            // add default character
-        waitingRoom.getSelectedCharacter().add(characterRepository.findById(0).get());
-        waitingRoom.getSelectedCharacter().add(characterRepository.findById(1).get());
-        waitingRoom.getSelectedCharacter().add(characterRepository.findById(2).get());
-        waitingRoom.getSelectedCharacter().add(characterRepository.findById(4).get());
-        waitingRoom.getSelectedCharacter().add(characterRepository.findById(5).get());
         waitingRoom = waitingRoomRepository.save(waitingRoom);
 
         // set response dto
-        PostResponseDto postResponseDto = new PostResponseDto();
-        postResponseDto.setData(new WaitingRoomData());
-        postResponseDto.getData().setWaiting_room_id(waitingRoom.getId());
-        postResponseDto.getData().setWaiting_room_admin(new UserData(admin.getId(), admin.getNickname()));
-        postResponseDto.getData().setWaiting_room_member(new ArrayList<>());
-        postResponseDto.getData().setWaiting_room_maximum_user(defaultMaximumMember);
-        try{
-            postResponseDto.getData().refreshCharacters(waitingRoom.getSelectedCharacter());
-        } catch (Exception e){
-
-        }
+        CreateRoomResponseDto postResponseDto = new CreateRoomResponseDto();
+        postResponseDto.setData(waitingRoom.getId(), admin);
 
         postResponseDto.setStatus(HttpStatus.OK.value());
         postResponseDto.setMessage("new waiting room is created");
@@ -100,12 +81,110 @@ public class WaitingRoomService {
         responseDto.getData().setWaiting_room_maximum_user(waitingRoom.getMaximumUser());
         try{
             responseDto.getData().refreshCharacters(waitingRoom.getSelectedCharacter());
-        } catch (Exception e){
-
-        }
+        } catch (Exception e){}
 
         responseDto.setMessage("success");
         responseDto.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    public ResponseEntity<UpdateMemberResponseDto> updateMember(String waitingRoomId, String userId, boolean join, NicknameData nicknameData){
+
+        UpdateMemberResponseDto responseDto = new UpdateMemberResponseDto();
+        Optional<WaitingRoomEntity> waitingRoomOptional = waitingRoomRepository.findById(waitingRoomId);
+
+        // check waiting room not found
+        if (waitingRoomOptional.isEmpty())  {
+            responseDto.setMessage(String.format("waiting room[%s] not found", waitingRoomId));
+            responseDto.setStatus(HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
+        WaitingRoomEntity waitingRoom = waitingRoomOptional.get();
+
+        // join
+        if (join){
+            // if user already join
+            if (waitingRoom.containsUser(userId)){
+                responseDto.setMessage("user is already member.");
+                responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            }
+
+            // if maximum < cnt
+            if (waitingRoom.getMember().size() + 1 == waitingRoom.getMaximumUser()){
+                responseDto.setMessage("member count is maximum.");
+                responseDto.setStatus(HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+            }
+
+            // if nickname duplicate
+            if (!nicknameData.getNickname().isEmpty()){
+                boolean flag = false;
+                if (waitingRoom.getAdmin().getNickname().equals(nicknameData.getNickname()))
+                    flag = true;
+                for (UserEntity user : waitingRoom.getMember()){
+                    if (user.getNickname().equals(nicknameData.getNickname()))
+                        flag = true;
+                }
+                if (flag){
+                    responseDto.setMessage("nickname duplicate.");
+                    responseDto.setStatus(HttpStatus.FORBIDDEN.value());
+                    return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+                }
+            }
+
+            // create new User
+            UserEntity user = new UserEntity();
+            user.setNickname(nicknameData.getNickname());
+            user = userRepository.save(user);
+            waitingRoom.getMember().add(user);
+
+            // set response dto
+            responseDto.setData(waitingRoom.getId(), user);
+        }
+
+        // withdraw
+        else{
+            // user-id is null
+            if (userId == null){
+                responseDto.setMessage("user-id is null.");
+                responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            }
+
+            // if user isn't member
+            if (!waitingRoom.containsUser(userId)){
+                responseDto.setMessage("user is not member.");
+                responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            }
+
+            // if last user
+            if (waitingRoom.getMember().isEmpty()){
+                waitingRoomRepository.deleteById(waitingRoom.getId());
+                userRepository.deleteById(userId);
+                responseDto.setStatus(HttpStatus.OK.value());
+                responseDto.setMessage("member is successfully updated");
+                return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            }
+
+            // if admin
+            if (waitingRoom.getAdmin().getId().equals(userId)){
+                UserEntity nextAdmin = waitingRoom.getMember().getFirst();
+                waitingRoom.setAdmin(nextAdmin);
+                waitingRoom.getMember().removeIf(user -> user.getId().equals(nextAdmin.getId()));
+            }
+            // if user
+            else{
+                waitingRoom.getMember().removeIf(user -> user.getId().equals(userId));
+            }
+
+            waitingRoom.refreshCharacters();
+        }
+
+        responseDto.setStatus(HttpStatus.OK.value());
+        responseDto.setMessage("member is successfully updated");
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

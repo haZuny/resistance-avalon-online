@@ -31,6 +31,12 @@ public class UserRepository {
         return user;
     }
 
+    public void deleteById(String id){
+        try{
+            userMap.remove(id);
+        } catch (Exception e){}
+    }
+
     public Optional<UserEntity> findById(String id) {
         if (userMap.containsKey(id)) return Optional.ofNullable(userMap.get(id));
         else return Optional.empty();
@@ -45,7 +51,6 @@ public class UserRepository {
             for (int i = 0; i < 4; i++) {
                 id += Integer.toString(random.nextInt(9));
             }
-            System.out.println("띠ㅏ");
         } while (userMap.containsKey(id));
         return id;
     }

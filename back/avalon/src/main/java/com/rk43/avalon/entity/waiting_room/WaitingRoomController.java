@@ -2,7 +2,8 @@ package com.rk43.avalon.entity.waiting_room;
 
 import com.rk43.avalon.entity.waiting_room.dto.GetIdResponseDto;
 import com.rk43.avalon.entity.waiting_room.dto.NicknameData;
-import com.rk43.avalon.entity.waiting_room.dto.PostResponseDto;
+import com.rk43.avalon.entity.waiting_room.dto.UpdateMemberResponseDto;
+import com.rk43.avalon.entity.waiting_room.dto.CreateRoomResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class WaitingRoomController {
 
     // create new waitingRoom
     @PostMapping("")
-    public ResponseEntity<PostResponseDto> post(@RequestBody NicknameData nickname){
+    public ResponseEntity<CreateRoomResponseDto> post(@RequestBody NicknameData nickname){
         return waitingRoomService.createNewRoom(nickname);
     }
 
@@ -27,6 +28,17 @@ public class WaitingRoomController {
     @GetMapping("/{waitingRoomId}")
     public ResponseEntity<GetIdResponseDto> get(@PathVariable String waitingRoomId, @RequestParam(name = "user-id") String userId){
         return waitingRoomService.getWaitingRoom(waitingRoomId, userId);
+    }
+
+
+    // join
+    @PostMapping("/{waitingRoomId}/member")
+    public ResponseEntity<UpdateMemberResponseDto> postMember(
+            @PathVariable String waitingRoomId
+            , @RequestParam(name = "user-id", required = false) String userId
+            , @RequestParam boolean join,
+            @RequestBody NicknameData nickname){
+        return waitingRoomService.updateMember(waitingRoomId, userId, join, nickname);
     }
 
 
