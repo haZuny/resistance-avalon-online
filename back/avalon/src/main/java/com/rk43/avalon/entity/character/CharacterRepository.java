@@ -11,15 +11,15 @@ public class CharacterRepository {
     public CharacterRepository() {
         // add characters
             // good
-        this.characterMap.put(0, new CharacterEntity(0, "good_default"));
-        this.characterMap.put(1, new CharacterEntity(1, "merlin"));
-        this.characterMap.put(2, new CharacterEntity(2, "percival"));
+        this.characterMap.put(0, new CharacterEntity(0, "good_default", true));
+        this.characterMap.put(1, new CharacterEntity(1, "merlin", true));
+        this.characterMap.put(2, new CharacterEntity(2, "percival", true));
             // evil
-        this.characterMap.put(3, new CharacterEntity(3, "evil_default"));
-        this.characterMap.put(4, new CharacterEntity(4, "assassin"));
-        this.characterMap.put(5, new CharacterEntity(5, "morgana"));
-        this.characterMap.put(6, new CharacterEntity(6, "mordred"));
-        this.characterMap.put(7, new CharacterEntity(7, "oberon"));
+        this.characterMap.put(3, new CharacterEntity(3, "evil_default", false));
+        this.characterMap.put(4, new CharacterEntity(4, "assassin", false));
+        this.characterMap.put(5, new CharacterEntity(5, "morgana", false));
+        this.characterMap.put(6, new CharacterEntity(6, "mordred", false));
+        this.characterMap.put(7, new CharacterEntity(7, "oberon", false));
     }
 
     public Optional<CharacterEntity> findById(int id){

@@ -34,7 +34,7 @@ public class WaitingRoomRepository {
             for (int i = 0; i < 4; i++){
                 id += Integer.toString(random.nextInt(9));
             }
-        } while (!waitingRoomMap.containsKey(id));
+        } while (waitingRoomMap.containsKey(id));
         return id;
     }
 }
