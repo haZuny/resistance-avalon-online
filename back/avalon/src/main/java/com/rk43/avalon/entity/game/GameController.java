@@ -27,4 +27,6 @@ public class GameController {
         return gameService.createNewVote(gameId, userId);
     }
 
+    
+
 }
