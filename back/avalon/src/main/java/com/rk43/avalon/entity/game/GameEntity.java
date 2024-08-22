@@ -18,7 +18,7 @@ public class GameEntity {
     ArrayList<AdventureEntity> adventures = new ArrayList<>();
     ArrayList<VoteEntity> votes = new ArrayList<>();
     boolean result;
-    int leader = 0;
+    int leader_idx = 0;
     int votes_fail_cnt = 0;
     int term_cnt = 0;
     String assassin_pick;

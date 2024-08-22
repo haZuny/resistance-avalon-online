@@ -23,7 +23,7 @@ public class CreateGameResponseDto extends DefaultResponseDto {
                     gamePlayer.getUser().getNickname(),
                     gamePlayer.getCharacter().getCharacter()));
         }
-        data.setGame_leader(game.getMember().get(game.getLeader()).getId());
+        data.setGame_leader(game.getMember().get(game.getLeader_idx()).getId());
     }
 
     @Getter

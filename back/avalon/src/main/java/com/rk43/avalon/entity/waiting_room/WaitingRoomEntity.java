@@ -1,13 +1,17 @@
 package com.rk43.avalon.entity.waiting_room;
 
 import com.rk43.avalon.entity.character.CharacterEntity;
+import com.rk43.avalon.entity.character.CharacterRepository;
+import com.rk43.avalon.entity.game_player.GamePlayerEntity;
 import com.rk43.avalon.entity.user.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Getter
 @Setter
@@ -49,4 +53,6 @@ public class WaitingRoomEntity {
             }
         }
     }
+
+
 }

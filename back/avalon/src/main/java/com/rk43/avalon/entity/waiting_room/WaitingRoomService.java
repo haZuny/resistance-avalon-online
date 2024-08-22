@@ -3,6 +3,7 @@ package com.rk43.avalon.entity.waiting_room;
 import com.rk43.avalon.entity.DefaultResponseDto;
 import com.rk43.avalon.entity.character.CharacterEntity;
 import com.rk43.avalon.entity.character.CharacterRepository;
+import com.rk43.avalon.entity.game_player.GamePlayerEntity;
 import com.rk43.avalon.entity.user.UserEntity;
 import com.rk43.avalon.entity.user.UserRepository;
 import com.rk43.avalon.entity.waiting_room.dto.*;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -264,5 +267,86 @@ public class WaitingRoomService {
         responseDto.setStatus(HttpStatus.OK.value());
         responseDto.setMessage("member is successfully updated");
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // mapping character per member
+    public ArrayList<GamePlayerEntity> getGameMemberList(WaitingRoomEntity waitingRoom){
+        // shuffled user list
+        ArrayList<UserEntity> shuffleUsers = new ArrayList<>(waitingRoom.getMember());
+        shuffleUsers.add(waitingRoom.getAdmin());
+        Collections.shuffle(shuffleUsers);
+
+        // selected character count(evil cnt)
+        int selectedCharacterCnt = waitingRoom.getSelectedCharacter().size();
+
+        // character list
+        ArrayList<CharacterEntity> characterList = new ArrayList<>(Arrays.asList(
+                // good
+                characterRepository.findById(0).get(),
+                characterRepository.findById(1).get(),
+                characterRepository.findById(2).get(),
+                // evil
+                characterRepository.findById(4).get(),
+                characterRepository.findById(5).get()
+        ));
+        for (CharacterEntity selected : waitingRoom.getSelectedCharacter()){
+            characterList.add(selected);
+        }
+
+        // add default character by member num
+        if (shuffleUsers.size() == 5){} // 3:2
+        else if (shuffleUsers.size() == 6){ // 4:2
+            // good
+            characterList.add(characterRepository.findById(0).get());
+        }
+        else if (shuffleUsers.size() == 7){ // 4:3
+            // good
+            characterList.add(characterRepository.findById(0).get());
+            // evil
+            if (selectedCharacterCnt < 1)
+                characterList.add(characterRepository.findById(3).get());
+        }
+        else if (shuffleUsers.size() == 8){ // 5:3
+            // good
+            characterList.add(characterRepository.findById(0).get());
+            characterList.add(characterRepository.findById(0).get());
+            // evil
+            if (selectedCharacterCnt < 1)
+                characterList.add(characterRepository.findById(3).get());
+        }
+        else if (shuffleUsers.size() == 9){ // 6:3
+            // good
+            characterList.add(characterRepository.findById(0).get());
+            characterList.add(characterRepository.findById(0).get());
+            characterList.add(characterRepository.findById(0).get());
+            // evil
+            if (selectedCharacterCnt < 1)
+                characterList.add(characterRepository.findById(3).get());
+        }
+        else if (shuffleUsers.size() == 10){    // 6:4
+            // good
+            characterList.add(characterRepository.findById(0).get());
+            characterList.add(characterRepository.findById(0).get());
+            characterList.add(characterRepository.findById(0).get());
+            // evil
+            if (selectedCharacterCnt == 0){
+                characterList.add(characterRepository.findById(3).get());
+                characterList.add(characterRepository.findById(3).get());
+            }
+            else if (selectedCharacterCnt == 1)
+                characterList.add(characterRepository.findById(3).get());
+        }
+
+        // mapping user and character
+        ArrayList<GamePlayerEntity> mappedList = new ArrayList<>();
+        for (int i = 0; i < shuffleUsers.size(); i++){
+            GamePlayerEntity gamePlayer = new GamePlayerEntity();
+            gamePlayer.setId(shuffleUsers.get(i).getId());
+            gamePlayer.setUser(shuffleUsers.get(i));
+            gamePlayer.setCharacter(characterList.get(i));
+            mappedList.add(gamePlayer);
+        }
+
+        return mappedList;
     }
 }

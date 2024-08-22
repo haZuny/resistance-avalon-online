@@ -2,30 +2,39 @@ package com.rk43.avalon.entity.game;
 
 import com.rk43.avalon.entity.game.dto.CreateGameResponseDto;
 import com.rk43.avalon.entity.game_player.GamePlayerEntity;
+import com.rk43.avalon.entity.game_player.GamePlayerRepository;
 import com.rk43.avalon.entity.user.UserEntity;
 import com.rk43.avalon.entity.user.UserRepository;
 import com.rk43.avalon.entity.waiting_room.WaitingRoomEntity;
 import com.rk43.avalon.entity.waiting_room.WaitingRoomRepository;
+import com.rk43.avalon.entity.waiting_room.WaitingRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
 public class GameService {
     GameRepository gameRepository;
     WaitingRoomRepository waitingRoomRepository;
+    WaitingRoomService waitingRoomService;
     UserRepository userRepository;
+    GamePlayerRepository gamePlayerRepository;
 
     @Autowired
     public GameService(GameRepository gameRepository,
                        WaitingRoomRepository waitingRoomRepository,
-                       UserRepository userRepository) {
+                       WaitingRoomService waitingRoomService,
+                       UserRepository userRepository,
+                       GamePlayerRepository gamePlayerRepository) {
         this.gameRepository = gameRepository;
         this.waitingRoomRepository = waitingRoomRepository;
+        this.waitingRoomService = waitingRoomService;
         this.userRepository = userRepository;
+        this.gamePlayerRepository = gamePlayerRepository;
     }
 
     // create
@@ -59,7 +68,7 @@ public class GameService {
         }
 
         // check member cnt
-        if (waitingRoom.getMember().size() +1 <= 5){
+        if (waitingRoom.getMember().size() +1 <= 4){
             responseDto.setMessage(String.format("member num is invalid"));
             responseDto.setStatus(HttpStatus.FORBIDDEN.value());
             return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
@@ -69,15 +78,16 @@ public class GameService {
         GameEntity game = new GameEntity();
         game.setId(waitingRoom.getId());
         game.setWaitingRoom(waitingRoom);
-            // add member
-        for (UserEntity member: waitingRoom.getMember()){
-            GamePlayerEntity gamePlayer = new GamePlayerEntity();
-            gamePlayer.setUser(member);
-            gamePlayer.setCharacter();
-            game.getMember().add(member);
+        ArrayList<GamePlayerEntity> gameMember = waitingRoomService.getGameMemberList(waitingRoom);
+        for (GamePlayerEntity gamePlayer : gameMember){
+            gamePlayerRepository.save(gamePlayer);
         }
+        game.setMember(gameMember);
+        game = gameRepository.save(game);
 
-
-
+        responseDto.setData(game);
+        responseDto.setMessage("new game is created.");
+        responseDto.setStatus(HttpStatus.CREATED.value());
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 }
