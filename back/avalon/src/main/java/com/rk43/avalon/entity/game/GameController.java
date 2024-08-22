@@ -1,10 +1,11 @@
 package com.rk43.avalon.entity.game;
 
+import com.rk43.avalon.entity.DefaultResponseDto;
 import com.rk43.avalon.entity.game.dto.CreateGameResponseDto;
 import com.rk43.avalon.entity.game.dto.CreateNewVoteResponseDto;
+import com.rk43.avalon.entity.game.dto.SelectRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,11 @@ public class GameController {
         return gameService.createNewVote(gameId, userId);
     }
 
-    
+    @PatchMapping("/{gameId}/votes")
+    public ResponseEntity<DefaultResponseDto> addVoteSelect(@PathVariable String gameId,
+                                                            @RequestParam(name = "user-id") String userId,
+                                                            @RequestBody SelectRequestDto voted){
+        return gameService.addVoteSelect(gameId, userId, voted);
+    }
 
 }
