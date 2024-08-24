@@ -16,7 +16,7 @@ public class UpdateMemberResponseDto extends DefaultResponseDto {
 
     @Getter
     @Setter
-    class Data{
+    public class Data{
         String waiting_room_id;
         UserData waiting_room_created_user;
 

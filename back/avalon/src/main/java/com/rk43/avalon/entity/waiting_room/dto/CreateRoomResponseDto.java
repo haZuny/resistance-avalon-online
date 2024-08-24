@@ -16,7 +16,7 @@ public class CreateRoomResponseDto extends DefaultResponseDto {
 
     @Getter
     @Setter
-    class Data{
+    public class Data{
         String waiting_room_id;
         UserData waiting_room_admin;
 
