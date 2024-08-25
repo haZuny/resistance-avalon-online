@@ -10,5 +10,5 @@ import java.util.ArrayList;
 public class Vote {
     long vote_id;
     ArrayList<Select> vote_selects;
-    boolean vote_result;
+    Boolean vote_result;
 }

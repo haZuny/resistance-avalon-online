@@ -19,7 +19,8 @@ public class GetAdventureResponseDto extends DefaultResponseDto {
     public void setData(AdventureEntity adventure){
         data = new Adventure();
         data.adventure_id = adventure.getId();
-        data.adventure_result = adventure.isResult();
+        if (adventure.getResult() != null)
+            data.adventure_result = adventure.getResult();
         data.adventure_selects = new ArrayList<>();
         for (SelectEntity select : adventure.getSelects()){
             data.adventure_selects.add(new Select(select.getId(), select.getGamePlayer().getId(), select.isVoted()));

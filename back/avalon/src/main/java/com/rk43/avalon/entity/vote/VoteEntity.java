@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class VoteEntity {
     long id = -1;
     ArrayList<SelectEntity> selects;
-    boolean result;
+    Boolean result;
 
     public void setResult(){
         int res = 0;

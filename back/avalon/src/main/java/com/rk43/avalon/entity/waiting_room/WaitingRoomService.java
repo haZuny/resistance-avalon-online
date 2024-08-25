@@ -7,11 +7,13 @@ import com.rk43.avalon.entity.game_player.GamePlayerEntity;
 import com.rk43.avalon.entity.user.UserEntity;
 import com.rk43.avalon.entity.user.UserRepository;
 import com.rk43.avalon.entity.waiting_room.dto.*;
+import com.rk43.avalon.sse.SseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,12 +24,18 @@ public class WaitingRoomService {
     WaitingRoomRepository waitingRoomRepository;
     UserRepository userRepository;
     CharacterRepository characterRepository;
+    SseService sseService;
 
     @Autowired
-    public WaitingRoomService(WaitingRoomRepository waitingRoomRepository, UserRepository userRepository, CharacterRepository characterRepository) {
+    public WaitingRoomService(
+            WaitingRoomRepository waitingRoomRepository,
+            UserRepository userRepository,
+            CharacterRepository characterRepository,
+            SseService sseService) {
         this.waitingRoomRepository = waitingRoomRepository;
         this.userRepository = userRepository;
         this.characterRepository = characterRepository;
+        this.sseService = sseService;
     }
 
     public ResponseEntity<CreateRoomResponseDto> createNewRoom(NicknameData nickname) {
@@ -163,6 +171,13 @@ public class WaitingRoomService {
             waitingRoom.setSelectedCharacter(temp);
         }
 
+        // sse send
+        try {
+            sseService.waitingRoomOptionChange(waitingRoomId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         // response
         responseDto.setMessage(String.format("game option is successfully updated."));
         responseDto.setStatus(HttpStatus.OK.value());
@@ -263,6 +278,8 @@ public class WaitingRoomService {
 
             waitingRoom.refreshCharacters();
         }
+
+        sseService.waitingRoomMemberChange(waitingRoomId, join);
 
         responseDto.setStatus(HttpStatus.OK.value());
         responseDto.setMessage("member is successfully updated");

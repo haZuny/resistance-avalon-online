@@ -11,5 +11,5 @@ public class Adventure {
     long adventure_id;
     ArrayList<String> adventure_member;
     ArrayList<Select> adventure_selects;
-    boolean adventure_result;
+    Boolean adventure_result;
 }

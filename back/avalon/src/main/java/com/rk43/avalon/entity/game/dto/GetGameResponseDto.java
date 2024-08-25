@@ -27,6 +27,7 @@ public class GetGameResponseDto extends DefaultResponseDto {
         int game_votes_fail_cnt;
         int game_term_cnt;
         String game_assassin_pick;
+        Boolean game_result;
     }
 
     public void setData(GameEntity game){
@@ -43,7 +44,7 @@ public class GetGameResponseDto extends DefaultResponseDto {
         for (AdventureEntity adventure : game.getAdventures()){
             Adventure adventureDto = new Adventure();
             adventureDto.adventure_id = adventure.getId();
-            adventureDto.adventure_result = adventure.isResult();
+            adventureDto.adventure_result = adventure.getResult();
             adventureDto.adventure_selects = new ArrayList<>();
             for (SelectEntity select : adventure.getSelects()){
                 adventureDto.adventure_selects.add(new Select(select.getId(), select.getGamePlayer().getId(), select.isVoted()));
@@ -58,7 +59,7 @@ public class GetGameResponseDto extends DefaultResponseDto {
         for (VoteEntity vote : game.getVotes()){
             Vote voteDto = new Vote();
             voteDto.vote_id = vote.getId();
-            voteDto.vote_result = vote.isResult();
+            voteDto.vote_result = vote.getResult();
             voteDto.vote_selects = new ArrayList<>();
             for (SelectEntity select : vote.getSelects()){
                 voteDto.getVote_selects().add(new Select(select.getId(), select.getGamePlayer().getId(), select.isVoted()));
@@ -67,6 +68,9 @@ public class GetGameResponseDto extends DefaultResponseDto {
         }
         data.game_votes_fail_cnt= game.getVotes_fail_cnt();
         data.game_term_cnt = game.getTerm_cnt();
-        data.game_assassin_pick = game.getAssassin_pick();
+        if (game.getAssassin_pick() != null)
+            data.game_assassin_pick = game.getAssassin_pick().getId();
+        if (game.getResult() != null)
+            data.game_result = game.getResult();
     }
 }

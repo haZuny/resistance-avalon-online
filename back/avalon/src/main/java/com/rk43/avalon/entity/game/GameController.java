@@ -16,6 +16,9 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    /**
+     * About Game
+     */
     @PostMapping("/{gameId}")
     public ResponseEntity<CreateGameResponseDto> createGame(@PathVariable String gameId, @RequestParam(name = "user-id") String userId) {
         return gameService.createNewGame(gameId, userId);
@@ -27,6 +30,9 @@ public class GameController {
         return gameService.getGame(gameId, userId);
     }
 
+    /**
+     * About vote
+     */
     @PostMapping("/{gameId}/votes")
     public ResponseEntity<CreateNewVoteResponseDto> createNewVote(@PathVariable String gameId, @RequestParam(name = "user-id") String userId) {
         return gameService.createNewVote(gameId, userId);
@@ -50,6 +56,9 @@ public class GameController {
         return gameService.getVote(voteId, userId);
     }
 
+    /**
+     * About adventure
+     */
     @PostMapping("/{gameId}/adventures")
     public ResponseEntity<CreateAdventureResponseDto> createAdventure(@PathVariable String gameId,
                                                                       @RequestParam(name = "user-id") String userId,
@@ -74,6 +83,18 @@ public class GameController {
                                                                 @RequestParam(name = "user-id") String userId) {
         return gameService.getAdventure(adventureId, userId);
     }
+
+    /**
+     * About Assassin
+     */
+    @PatchMapping("/{gameId}/assassin-pick")
+    public ResponseEntity<DefaultResponseDto> pickAssassin(@PathVariable String gameId,
+                                                           @RequestParam(name = "user-id") String userId,
+                                                           @RequestBody AssassinPick assassinPick){
+        return gameService.assassinPick(gameId, userId, assassinPick);
+    }
+
+
 
 
 }

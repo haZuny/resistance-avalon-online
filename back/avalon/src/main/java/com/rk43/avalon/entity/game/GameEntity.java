@@ -4,8 +4,11 @@ import com.rk43.avalon.entity.adventure.AdventureEntity;
 import com.rk43.avalon.entity.game_player.GamePlayerEntity;
 import com.rk43.avalon.entity.vote.VoteEntity;
 import com.rk43.avalon.entity.waiting_room.WaitingRoomEntity;
+import com.rk43.avalon.sse.SseService;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -17,36 +20,9 @@ public class GameEntity {
     ArrayList<GamePlayerEntity> member;
     ArrayList<AdventureEntity> adventures = new ArrayList<>();
     ArrayList<VoteEntity> votes = new ArrayList<>();
-    boolean result;
+    Boolean result;
     int leader_idx = 0;
     int votes_fail_cnt = 0;
     int term_cnt = 0;
-    String assassin_pick;
-
-    public void nextTurn(VoteEntity vote) {
-        // success_start adventure
-        if (vote.isResult()) {
-            votes_fail_cnt = 0;
-        }
-        // fail_next turn
-        else {
-            votes_fail_cnt++;
-            term_cnt++;
-            if (++leader_idx >= member.size()) leader_idx = 0;
-
-            // check is game end
-            if (votes_fail_cnt >= 5) {
-                result = false;
-            }
-        }
-    }
-
-    public void nextTurn(AdventureEntity adventure) {
-        term_cnt++;
-        if (++leader_idx >= member.size()) leader_idx = 0;
-
-        // check is game end
-    }
-
-
+    GamePlayerEntity assassin_pick;
 }

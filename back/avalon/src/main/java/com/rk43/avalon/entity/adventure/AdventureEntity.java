@@ -15,7 +15,7 @@ public class AdventureEntity {
     long id = -1;
     ArrayList<GamePlayerEntity> member;
     ArrayList<SelectEntity> selects;
-    boolean result;
+    Boolean result;
 
     public void setResult(){
         int res = 0;

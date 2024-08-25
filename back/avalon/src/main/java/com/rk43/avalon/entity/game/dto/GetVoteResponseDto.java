@@ -17,7 +17,8 @@ public class GetVoteResponseDto extends DefaultResponseDto {
     public void setData(VoteEntity vote){
         data = new Vote();
         data.vote_id = vote.getId();
-        data.vote_result = vote.isResult();
+        if(vote.getResult() != null)
+            data.vote_result = vote.getResult();
         data.vote_selects = new ArrayList<>();
         for (SelectEntity select : vote.getSelects()){
             data.getVote_selects().add(new Select(select.getId(), select.getGamePlayer().getId(), select.isVoted()));
