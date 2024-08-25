@@ -12,9 +12,10 @@ import java.util.ArrayList;
 @Setter
 public class GetVoteResponseDto extends DefaultResponseDto {
 
-    Data data;
+    Vote data;
 
     public void setData(VoteEntity vote){
+        data = new Vote();
         data.vote_id = vote.getId();
         data.vote_result = vote.isResult();
         data.vote_selects = new ArrayList<>();
@@ -23,11 +24,4 @@ public class GetVoteResponseDto extends DefaultResponseDto {
         }
     }
 
-    @Getter
-    @Setter
-    class Data{
-        long vote_id;
-        ArrayList<Select> vote_selects;
-        boolean vote_result;
-    }
 }

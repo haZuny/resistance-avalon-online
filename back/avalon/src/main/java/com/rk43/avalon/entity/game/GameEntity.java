@@ -23,21 +23,30 @@ public class GameEntity {
     int term_cnt = 0;
     String assassin_pick;
 
-    public void nextTurn(VoteEntity vote){
+    public void nextTurn(VoteEntity vote) {
         // success_start adventure
-        if(vote.isResult()){
+        if (vote.isResult()) {
             votes_fail_cnt = 0;
         }
         // fail_next turn
-        else{
+        else {
             votes_fail_cnt++;
             term_cnt++;
-            if (++leader_idx >= member.size())  leader_idx = 0;
+            if (++leader_idx >= member.size()) leader_idx = 0;
 
             // check is game end
-            if (votes_fail_cnt >= 5){
+            if (votes_fail_cnt >= 5) {
                 result = false;
             }
         }
     }
+
+    public void nextTurn(AdventureEntity adventure) {
+        term_cnt++;
+        if (++leader_idx >= member.size()) leader_idx = 0;
+
+        // check is game end
+    }
+
+
 }
