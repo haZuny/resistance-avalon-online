@@ -3,7 +3,7 @@ package com.rk43.avalon.entity.game;
 import com.rk43.avalon.entity.DefaultResponseDto;
 import com.rk43.avalon.entity.game.dto.CreateGameResponseDto;
 import com.rk43.avalon.entity.game.dto.CreateNewVoteResponseDto;
-import com.rk43.avalon.entity.game.dto.GetVotesResponseDto;
+import com.rk43.avalon.entity.game.dto.GetVoteResponseDto;
 import com.rk43.avalon.entity.game.dto.SelectRequestDto;
 import com.rk43.avalon.entity.game_player.GamePlayerEntity;
 import com.rk43.avalon.entity.game_player.GamePlayerRepository;
@@ -140,9 +140,9 @@ public class GameService {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<GetVotesResponseDto> getVotes(String gameId, String userId){
+    public ResponseEntity<GetVoteResponseDto> getVotes(String gameId, String userId){
 
-        GetVotesResponseDto responseDto = new GetVotesResponseDto();
+        GetVoteResponseDto responseDto = new GetVoteResponseDto();
 
         // check game is empty
         Optional<GameEntity> gameOptional = gameRepository.findById(gameId);
@@ -170,6 +170,40 @@ public class GameService {
 
         VoteEntity lastVote = game.getVotes().getLast();
         responseDto.setData(lastVote);
+        responseDto.setMessage(String.format("request success"));
+        responseDto.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    public ResponseEntity<GetVoteResponseDto> getVote(int voteId, String userId){
+
+        GetVoteResponseDto responseDto = new GetVoteResponseDto();
+
+        // get vote
+        Optional<VoteEntity> voteOptional = voteRepository.findById(voteId);
+        if (voteOptional.isEmpty()){
+            responseDto.setMessage(String.format("vote[%s] not found", voteId));
+            responseDto.setStatus(HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+        VoteEntity vote = voteOptional.get();
+
+        // check user auth
+//        Optional<GamePlayerEntity> gamePlayerOptional = gamePlayerRepository.findById(userId);
+//        if (gamePlayerOptional.isEmpty() || game.getWaitingRoom().containsUser(userId)){
+//            responseDto.setMessage(String.format("user[%s] is not member", userId));
+//            responseDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+//        }
+
+        // check vote is empty
+//        if (game.getVotes().isEmpty()){
+//            responseDto.setMessage(String.format("request success"));
+//            responseDto.setStatus(HttpStatus.OK.value());
+//            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+//        }
+
+        responseDto.setData(vote);
         responseDto.setMessage(String.format("request success"));
         responseDto.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-public class GetVotesResponseDto extends DefaultResponseDto {
+public class GetVoteResponseDto extends DefaultResponseDto {
 
     Data data;
 
