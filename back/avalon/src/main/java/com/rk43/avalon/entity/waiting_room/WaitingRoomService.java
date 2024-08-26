@@ -214,22 +214,6 @@ public class WaitingRoomService {
                 return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
             }
 
-            // if nickname duplicate
-            if (!nicknameData.getNickname().isEmpty()){
-                boolean flag = false;
-                if (waitingRoom.getAdmin().getNickname().equals(nicknameData.getNickname()))
-                    flag = true;
-                for (UserEntity user : waitingRoom.getMember()){
-                    if (user.getNickname().equals(nicknameData.getNickname()))
-                        flag = true;
-                }
-                if (flag){
-                    responseDto.setMessage("nickname duplicate.");
-                    responseDto.setStatus(HttpStatus.FORBIDDEN.value());
-                    return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
-                }
-            }
-
             // create new User
             UserEntity user = new UserEntity();
             user.setNickname(nicknameData.getNickname());
