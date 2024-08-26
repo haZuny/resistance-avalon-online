@@ -253,6 +253,13 @@ public class GameService {
 
         DefaultResponseDto responseDto = new DefaultResponseDto();
 
+        // check request body
+        if (voted.getVoted() == null){
+            responseDto.setMessage(String.format("request body invalid"));
+            responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
+
         // check game is empty
         Optional<GameEntity> gameOptional = gameRepository.findById(gameId);
         if (gameOptional.isEmpty()) {
@@ -295,7 +302,7 @@ public class GameService {
 
         // create select
         SelectEntity select = new SelectEntity();
-        select.setVoted(voted.isVoted());
+        select.setVoted(voted.getVoted());
         select.setGamePlayer(gamePlayer);
         select = selectRepository.save(select);
         lastVote.getSelects().add(select);
@@ -317,6 +324,13 @@ public class GameService {
     public ResponseEntity<CreateAdventureResponseDto> createAdventure(String gameId, String userId, AdventureMember member) {
 
         CreateAdventureResponseDto responseDto = new CreateAdventureResponseDto();
+
+        // check request body
+        if (member.getMember() == null){
+            responseDto.setMessage(String.format("request body invalid"));
+            responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
 
         // fine game
         Optional<GameEntity> gameOptional = gameRepository.findById(gameId);
@@ -413,6 +427,13 @@ public class GameService {
 
         DefaultResponseDto responseDto = new DefaultResponseDto();
 
+        // check request body
+        if (voted.getVoted() == null){
+            responseDto.setMessage(String.format("request body invalid"));
+            responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
+
         // check game is empty
         Optional<GameEntity> gameOptional = gameRepository.findById(gameId);
         if (gameOptional.isEmpty()) {
@@ -463,7 +484,7 @@ public class GameService {
 
         // create select
         SelectEntity select = new SelectEntity();
-        select.setVoted(voted.isVoted());
+        select.setVoted(voted.getVoted());
         select.setGamePlayer(gamePlayer);
         select = selectRepository.save(select);
         lastAdventure.getSelects().add(select);
@@ -519,6 +540,13 @@ public class GameService {
     public ResponseEntity<DefaultResponseDto> assassinPick(String gameId, String userId, AssassinPick assassinPick) {
 
         DefaultResponseDto responseDto = new DefaultResponseDto();
+
+        // check request body
+        if (assassinPick.getAssassin_pick() == null){
+            responseDto.setMessage(String.format("request body invalid"));
+            responseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
 
         // check game is empty
         Optional<GameEntity> gameOptional = gameRepository.findById(gameId);

@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SelectRequestDto {
-    boolean voted;
+    Boolean voted;
 }
