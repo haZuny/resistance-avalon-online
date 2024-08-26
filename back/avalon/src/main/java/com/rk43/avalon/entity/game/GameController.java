@@ -93,8 +93,4 @@ public class GameController {
                                                            @RequestBody AssassinPick assassinPick){
         return gameService.assassinPick(gameId, userId, assassinPick);
     }
-
-
-
-
 }

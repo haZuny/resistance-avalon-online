@@ -347,7 +347,6 @@ public class GameService {
             }
             gameMember.add(gamePlayerRepository.findById(memberId).get());
         }
-        if (!member.getMember().contains(game.getMember().get(game.getLeader_idx()).getId())) paramInvalid = true;
         if (paramInvalid) {
             responseDto.setMessage(String.format("member value is invalid"));
             responseDto.setStatus(HttpStatus.FORBIDDEN.value());
