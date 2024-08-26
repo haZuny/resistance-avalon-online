@@ -208,7 +208,7 @@ public class GameService {
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
 
-        VoteEntity lastVote = game.getVotes().getLast();
+        VoteEntity lastVote = game.getVotes().get(game.getVotes().size()-1);
         responseDto.setData(lastVote);
         responseDto.setMessage(String.format("request success"));
         responseDto.setStatus(HttpStatus.OK.value());
@@ -284,7 +284,7 @@ public class GameService {
             responseDto.setStatus(HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
         }
-        VoteEntity lastVote = game.getVotes().getLast();
+        VoteEntity lastVote = game.getVotes().get(game.getVotes().size()-1);
 
         // check if vote end
         if (lastVote.isEnd(game)) {
@@ -416,7 +416,7 @@ public class GameService {
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
 
-        AdventureEntity lastAdventure = game.getAdventures().getLast();
+        AdventureEntity lastAdventure = game.getAdventures().get(game.getAdventures().size()-1);
         responseDto.setData(lastAdventure);
         responseDto.setMessage(String.format("request success"));
         responseDto.setStatus(HttpStatus.OK.value());
@@ -449,7 +449,7 @@ public class GameService {
             responseDto.setStatus(HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
         }
-        AdventureEntity lastAdventure = game.getAdventures().getLast();
+        AdventureEntity lastAdventure = game.getAdventures().get(game.getAdventures().size()-1);
 
         // check user auth
         Optional<GamePlayerEntity> gamePlayerOptional = gamePlayerRepository.findById(userId);

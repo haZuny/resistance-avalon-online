@@ -251,7 +251,7 @@ public class WaitingRoomService {
 
             // if admin
             if (waitingRoom.getAdmin().getId().equals(userId)){
-                UserEntity nextAdmin = waitingRoom.getMember().getFirst();
+                UserEntity nextAdmin = waitingRoom.getMember().get(0);
                 waitingRoom.setAdmin(nextAdmin);
                 waitingRoom.getMember().removeIf(user -> user.getId().equals(nextAdmin.getId()));
             }
