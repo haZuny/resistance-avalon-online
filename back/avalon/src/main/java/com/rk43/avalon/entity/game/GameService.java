@@ -470,7 +470,7 @@ public class GameService {
 
         // check vote is end
         if (lastAdventure.isEnd()) {
-            lastAdventure.setResult();
+            lastAdventure.setResult(game);
             sseService.adventureSelectEnd(gameId);
             adventureEnd(game);
         }

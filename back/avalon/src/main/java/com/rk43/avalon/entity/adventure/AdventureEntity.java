@@ -17,14 +17,19 @@ public class AdventureEntity {
     ArrayList<SelectEntity> selects;
     Boolean result;
 
-    public void setResult(){
-        int res = 0;
+    public void setResult(GameEntity game){
+        int trueNum = 0;
         for (SelectEntity select : selects){
-            if (select.isVoted())   res++;
-            else res --;
+            if (select.isVoted())   trueNum++;
         }
-        if (res > 0)    result = true;
-        else result = false;
+        // 4번째 원정 특이점
+        if (game.getMember().size() >= 7 && game.getAdventures().size() == 4){
+            result = selects.size()-trueNum < 2;
+        }
+        // 그 외에는 만장일치
+        else{
+            result = trueNum == selects.size();
+        }
     }
 
     public boolean isEnd(){
