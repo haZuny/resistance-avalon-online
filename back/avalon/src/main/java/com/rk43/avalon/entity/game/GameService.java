@@ -147,7 +147,7 @@ public class GameService {
 
         CreateNewVoteResponseDto responseDto = new CreateNewVoteResponseDto();
 
-        // fine game
+        // find game
         Optional<GameEntity> gameOptional = gameRepository.findById(gameId);
         if (gameOptional.isEmpty()) {
             responseDto.setMessage(String.format("game[%s] not found", gameId));
@@ -162,6 +162,26 @@ public class GameService {
             responseDto.setMessage(String.format("player[%s] is not leader", userId));
             responseDto.setStatus(HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+        }
+
+        // check last game is end
+        if (!game.getAdventures().isEmpty()){
+            AdventureEntity adventure = game.getAdventures().get(game.getAdventures().size()-1);
+            if (!adventure.isEnd()){
+                responseDto.setMessage(String.format("adventure[%s] is not end", adventure.getId()));
+                responseDto.setStatus(HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+            }
+        }
+
+        // check last vote is end
+        if (!game.getVotes().isEmpty()){
+            VoteEntity vote = game.getVotes().get(game.getVotes().size()-1);
+            if (!vote.isEnd(game)){
+                responseDto.setMessage(String.format("vote[%s] is not end", vote.getId()));
+                responseDto.setStatus(HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+            }
         }
 
         // create new vote
@@ -369,7 +389,29 @@ public class GameService {
 
 
         // check last vote
-        // pass;;;;
+        if (!game.getAdventures().isEmpty()){
+            AdventureEntity adventure = game.getAdventures().get(game.getAdventures().size()-1);
+            if (!adventure.isEnd()){
+                responseDto.setMessage(String.format("adventure[%s] is not end", adventure.getId()));
+                responseDto.setStatus(HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+            }
+        }
+
+        // check last vote is end
+        if (!game.getVotes().isEmpty()){
+            VoteEntity vote = game.getVotes().get(game.getVotes().size()-1);
+            if (!vote.isEnd(game)){
+                responseDto.setMessage(String.format("vote[%s] is not end", vote.getId()));
+                responseDto.setStatus(HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+            }
+        }
+        else{
+            responseDto.setMessage(String.format("vote is not started"));
+            responseDto.setStatus(HttpStatus.FORBIDDEN.value());
+            return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
+        }
 
         // create new adventure
         AdventureEntity adventure = new AdventureEntity();
@@ -666,7 +708,6 @@ public class GameService {
         }
 
         // next turn
-        game.setVotes_fail_cnt(game.getVotes_fail_cnt()+1);
         game.setTerm_cnt(game.getTerm_cnt()+1);
         if (game.getLeader_idx() == game.getMember().size()-1)
             game.setLeader_idx(0);
@@ -676,7 +717,7 @@ public class GameService {
 
     public void assassinPickEnd(GameEntity game){
         // 악 승리(어세신이 맞춤)
-        if (game.getAssassin_pick().getCharacter().getId() == 4){
+        if (game.getAssassin_pick().getCharacter().getId() == 1){
             game.setResult(false);
         }
         // 악(어쎄신이 틀림)
