@@ -91,6 +91,7 @@ public class WaitingRoomService {
         for (UserEntity user : waitingRoom.getMember()){
             responseDto.getData().getWaiting_room_member().add(new UserData(user.getId(), user.getNickname()));
         }
+        responseDto.getData().getWaiting_room_member().add(new UserData(waitingRoom.getAdmin().getId(), waitingRoom.getAdmin().getNickname()));
         responseDto.getData().setWaiting_room_maximum_user(waitingRoom.getMaximumUser());
         try{
             responseDto.getData().refreshCharacters(waitingRoom.getSelectedCharacter());
