@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rk43.avalon.AvalonApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-08-26T06:48:51" hostname="DESKTOP-LI1NAOP" time="1.374">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.rk43.avalon.AvalonApplicationTests" time="1.374"/>
+  <system-out><![CDATA[15:48:47.999 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.rk43.avalon.AvalonApplicationTests]: AvalonApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:48:48.167 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.rk43.avalon.AvalonApplication for test class com.rk43.avalon.AvalonApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.2)
+
+2024-08-26T15:48:48.927+09:00  INFO 19632 --- [avalon] [    Test worker] com.rk43.avalon.AvalonApplicationTests   : Starting AvalonApplicationTests using Java 19.0.1 with PID 19632 (started by gkwns in C:\Users\gkwns\hajunFolder\resistance-avalon-online\back\avalon)
+2024-08-26T15:48:48.930+09:00  INFO 19632 --- [avalon] [    Test worker] com.rk43.avalon.AvalonApplicationTests   : No active profile set, falling back to 1 default profile: "default"
+2024-08-26T15:48:51.107+09:00  INFO 19632 --- [avalon] [    Test worker] com.rk43.avalon.AvalonApplicationTests   : Started AvalonApplicationTests in 2.645 seconds (process running for 4.784)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
