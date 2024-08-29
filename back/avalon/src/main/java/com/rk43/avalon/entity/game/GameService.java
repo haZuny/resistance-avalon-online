@@ -330,8 +330,8 @@ public class GameService {
         // check vote is end
         if (lastVote.isEnd(game)) {
             lastVote.setResult();
-            voteEnd(game, lastVote);
             sseService.voteSelectEnd(gameId);
+            voteEnd(game, lastVote);
         }
 
         // return
