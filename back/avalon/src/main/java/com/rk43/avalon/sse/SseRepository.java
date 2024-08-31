@@ -4,18 +4,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
 @Repository
 public class SseRepository {
-    HashMap<String, SseEmitter> sseMap = new HashMap<>();
+    HashMap<String, ArrayList<SseEmitter>> sseMap = new HashMap<>();
 
     public void create(String id){
-        sseMap.put(id, new SseEmitter(1000L * 60 * 60));
+        ArrayList<SseEmitter> sseList = new ArrayList<>();
+        sseMap.put(id, sseList);
     }
 
-    public Optional<SseEmitter> find(String id){
+    public Optional<ArrayList<SseEmitter>> find(String id){
         if (sseMap.containsKey(id)) return Optional.of(sseMap.get(id));
         return Optional.empty();
     }
