@@ -20,7 +20,7 @@ public class SseController {
     }
 
     @GetMapping("/sse/{roomId}")
-    public ResponseEntity<SseEmitter> connect(@PathVariable String roomId) throws IOException {
+    public SseEmitter connect(@PathVariable String roomId) throws IOException {
         return sseService.connect(roomId);
     }
 }

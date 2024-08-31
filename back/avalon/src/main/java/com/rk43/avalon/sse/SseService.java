@@ -20,7 +20,7 @@ public class SseService {
         this.sseRepository = emiterRepository;
     }
 
-    public ResponseEntity<SseEmitter> connect(String roomId) throws IOException {
+    public SseEmitter connect(String roomId) throws IOException {
         Optional<ArrayList<SseEmitter>> sseListOptional = sseRepository.find(roomId);
         if (sseListOptional.isEmpty()) {
             sseRepository.create(roomId);
@@ -35,14 +35,14 @@ public class SseService {
         // connect message
         newEmitter.send(SseEmitter.event().id("C_0").name("[C] connect"));
 
-        return ResponseEntity.ok(newEmitter);
+        return newEmitter;
     }
 
     /**
      * send event
      */
     public void sendEvent(SseEmitter sse, String id, String name) throws IOException {
-        sse.send(SseEmitter.event().id(id).name(name));
+        sse.send(SseEmitter.event().id(id).name(name).data(""));
     }
 
 
