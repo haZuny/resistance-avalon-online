@@ -41,8 +41,8 @@ public class SseService {
     /**
      * send event
      */
-    public void sendEvent(SseEmitter sse, String id, String name) throws IOException {
-        sse.send(SseEmitter.event().id(id).name(name).data(""));
+    public void sendEvent(SseEmitter sse, String id, String name, String data) throws IOException {
+        sse.send(SseEmitter.event().id(id).name(name).data(data));
     }
 
 
@@ -55,7 +55,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "W_0", "[W] game option is updated.");
+                sendEvent(sse, "W_0", "sse_event", "[W] game option is updated.");
             } catch (Exception e) {
             }
         }
@@ -68,13 +68,13 @@ public class SseService {
         for (SseEmitter sse : sseList) {
             if (join) {
                 try {
-                    sendEvent(sse, "W_1", "[W] new member enter.");
+                    sendEvent(sse, "W_1", "sse_event", "[W] new member enter.");
                 } catch (Exception e) {
                 }
 
             } else {
                 try {
-                    sendEvent(sse, "W_1", "[W] member leave game.");
+                    sendEvent(sse, "W_1", "sse_event", "[W] member leave game.");
                 } catch (Exception e) {
                 }
 
@@ -88,7 +88,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "W_2", "[W] game is started.");
+                sendEvent(sse, "W_2", "sse_event", "[W] game is started.");
             } catch (Exception e) {
             }
         }
@@ -104,7 +104,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_1_1", "[W] leader starts vote.");
+                sendEvent(sse, "G_1_1", "sse_event", "[W] leader starts vote.");
             } catch (Exception e) {
             }
         }
@@ -116,7 +116,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_1_2", "[W] vote is end.");
+                sendEvent(sse, "G_1_2", "sse_event", "[W] vote is end.");
             } catch (Exception e) {
             }
         }
@@ -128,7 +128,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_2_1", "[G] leader starts adventures.");
+                sendEvent(sse, "G_2_1", "sse_event", "[G] leader starts adventures.");
             } catch (Exception e) {
             }
         }
@@ -140,7 +140,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_2_2", "[G] adventure is end.");
+                sendEvent(sse, "G_2_2", "sse_event", "[G] adventure is end.");
             } catch (Exception e) {
             }
         }
@@ -152,7 +152,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_3_1", "[G] votes fail 5th, game is end.");
+                sendEvent(sse, "G_3_1", "sse_event", "[G] votes fail 5th, game is end.");
             } catch (Exception e) {
             }
         }
@@ -164,7 +164,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_3_2", "[G] adventure can’t success 3th while 5 playing.");
+                sendEvent(sse, "G_3_2", "sse_event", "[G] adventure can’t success 3th while 5 playing.");
             } catch (Exception e) {
             }
         }
@@ -176,7 +176,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_3_3", "[G] adventure success 3times.");
+                sendEvent(sse, "G_3_3", "sse_event", "[G] adventure success 3times.");
             } catch (Exception e) {
             }
         }
@@ -188,7 +188,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
         for (SseEmitter sse : sseList) {
             try {
-                sendEvent(sse, "G_3_4", "[G] assassin choose done.");
+                sendEvent(sse, "G_3_4", "sse_event", "[G] assassin choose done.");
             } catch (Exception e) {
             }
         }
