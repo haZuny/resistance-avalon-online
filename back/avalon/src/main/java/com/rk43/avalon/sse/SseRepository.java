@@ -14,6 +14,7 @@ public class SseRepository {
     HashMap<String, ArrayList<SseEmitter>> sseMap = new HashMap<>();
 
     public void create(String id){
+
         ArrayList<SseEmitter> sseList = new ArrayList<>();
         sseMap.put(id, sseList);
     }

@@ -29,7 +29,7 @@ public class SseService {
         ArrayList<SseEmitter> sseList = sseListOptional.get();
 
         // add new emiter
-        SseEmitter newEmitter = new SseEmitter();
+        SseEmitter newEmitter = new SseEmitter(1000L * 60 * 60);
         sseList.add(newEmitter);
 
         // connect message
